@@ -11,6 +11,7 @@ import Sidebar from "./layout/Sidebar";
 import Dashboard from "./pages/Dashboard";
 import ListeArticles from "./pages/ListeArticles";
 import Clients from "./pages/Clients";
+import Fournisseurs from "./pages/Fournisseurs";
 import AjouterArticle from "./pages/AjouterArticle";
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
                         <Route path="/" element={<Dashboard />} />
                         <Route path="/articles" element={<ListeArticles />} />
                         <Route path="/clients" element={<Clients />} />
+                        <Route path="/fournisseurs" element={<Fournisseurs />} />
                         <Route path="/ajouter-article" element={<AjouterArticle />} />
                     </Routes>
                 </div>

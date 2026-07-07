@@ -13,6 +13,7 @@ function Sidebar() {
             <h3 className="text-center mb-4">Gestion Stock</h3>
 
             <ul className="nav flex-column">
+
                 <li className="nav-item mb-3">
                     <Link to="/" className="nav-link text-white">
                         Dashboard
@@ -30,6 +31,13 @@ function Sidebar() {
                         Clients
                     </Link>
                 </li>
+
+                <li className="nav-item mb-3">
+                    <Link to="/fournisseurs" className="nav-link text-white">
+                        Fournisseurs
+                    </Link>
+                </li>
+
             </ul>
         </div>
     );

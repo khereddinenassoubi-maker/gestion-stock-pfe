@@ -1,73 +1,63 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-function Clients() {
-    const [clients, setClients] = useState([]);
+function Fournisseurs() {
+    const [fournisseurs, setFournisseurs] = useState([]);
 
-    const [idClient, setIdClient] = useState(null);
+    const [idFournisseur, setIdFournisseur] = useState(null);
     const [nom, setNom] = useState("");
-    const [prenom, setPrenom] = useState("");
     const [telephone, setTelephone] = useState("");
     const [email, setEmail] = useState("");
     const [adresse, setAdresse] = useState("");
 
     useEffect(() => {
-        afficherClients();
+        afficherFournisseurs();
     }, []);
 
-    const afficherClients = async () => {
-        const response = await axios.get("http://localhost:8080/api/clients");
-        setClients(response.data);
+    const afficherFournisseurs = async () => {
+        const response = await axios.get("http://localhost:8080/api/fournisseurs");
+        setFournisseurs(response.data);
     };
 
     const viderFormulaire = () => {
-        setIdClient(null);
+        setIdFournisseur(null);
         setNom("");
-        setPrenom("");
         setTelephone("");
         setEmail("");
         setAdresse("");
     };
 
-    const ajouterOuModifierClient = async () => {
-        const client = {
-            nom,
-            prenom,
-            telephone,
-            email,
-            adresse,
-            credit: 0
-        };
+    const ajouterOuModifierFournisseur = async () => {
+        const fournisseur = { nom, telephone, email, adresse };
 
-        if (idClient === null) {
-            await axios.post("http://localhost:8080/api/clients", client);
+        if (idFournisseur === null) {
+            await axios.post("http://localhost:8080/api/fournisseurs", fournisseur);
         } else {
-            await axios.put(`http://localhost:8080/api/clients/${idClient}`, client);
+            await axios.put(`http://localhost:8080/api/fournisseurs/${idFournisseur}`, fournisseur);
         }
 
-        afficherClients();
+        afficherFournisseurs();
         viderFormulaire();
     };
 
-    const preparerModification = (client) => {
-        setIdClient(client.id);
-        setNom(client.nom);
-        setPrenom(client.prenom);
-        setTelephone(client.telephone);
-        setEmail(client.email);
-        setAdresse(client.adresse);
+    const preparerModification = (fournisseur) => {
+        setIdFournisseur(fournisseur.id);
+        setNom(fournisseur.nom);
+        setTelephone(fournisseur.telephone);
+        setEmail(fournisseur.email);
+        setAdresse(fournisseur.adresse);
     };
 
-    const supprimerClient = async (id) => {
-        await axios.delete(`http://localhost:8080/api/clients/${id}`);
-        afficherClients();
+    const supprimerFournisseur = async (id) => {
+        await axios.delete(`http://localhost:8080/api/fournisseurs/${id}`);
+        afficherFournisseurs();
     };
 
     return (
         <div className="container mt-4">
             <div className="card shadow">
-                <div className="card-header bg-success text-white">
-                    <h3>Gestion des clients</h3>
+                <div className="card-header bg-warning text-dark">
+                    <h3>Gestion des fournisseurs</h3>
                 </div>
 
                 <div className="card-body">
@@ -86,24 +76,14 @@ function Clients() {
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Prénom"
-                                value={prenom}
-                                onChange={(e) => setPrenom(e.target.value)}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="row mb-3">
-                        <div className="col">
-                            <input
-                                type="text"
-                                className="form-control"
                                 placeholder="Téléphone"
                                 value={telephone}
                                 onChange={(e) => setTelephone(e.target.value)}
                             />
                         </div>
+                    </div>
 
+                    <div className="row mb-3">
                         <div className="col">
                             <input
                                 type="email"
@@ -113,26 +93,26 @@ function Clients() {
                                 onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
-                    </div>
 
-                    <div className="mb-3">
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Adresse"
-                            value={adresse}
-                            onChange={(e) => setAdresse(e.target.value)}
-                        />
+                        <div className="col">
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Adresse"
+                                value={adresse}
+                                onChange={(e) => setAdresse(e.target.value)}
+                            />
+                        </div>
                     </div>
 
                     <button
-                        className={idClient === null ? "btn btn-success mb-4" : "btn btn-warning mb-4"}
-                        onClick={ajouterOuModifierClient}
+                        className={idFournisseur === null ? "btn btn-warning mb-4" : "btn btn-success mb-4"}
+                        onClick={ajouterOuModifierFournisseur}
                     >
-                        {idClient === null ? "Ajouter Client" : "Mettre à jour"}
+                        {idFournisseur === null ? "Ajouter Fournisseur" : "Mettre à jour"}
                     </button>
 
-                    {idClient !== null && (
+                    {idFournisseur !== null && (
                         <button
                             className="btn btn-secondary mb-4 ms-2"
                             onClick={viderFormulaire}
@@ -146,37 +126,32 @@ function Clients() {
                         <tr>
                             <th>ID</th>
                             <th>Nom</th>
-                            <th>Prénom</th>
                             <th>Téléphone</th>
                             <th>Email</th>
                             <th>Adresse</th>
-                            <th>Crédit</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
 
                         <tbody>
-                        {clients.map((client) => (
-                            <tr key={client.id}>
-                                <td>{client.id}</td>
-                                <td>{client.nom}</td>
-                                <td>{client.prenom}</td>
-                                <td>{client.telephone}</td>
-                                <td>{client.email}</td>
-                                <td>{client.adresse}</td>
-                                <td>{client.credit}</td>
-
+                        {fournisseurs.map((fournisseur) => (
+                            <tr key={fournisseur.id}>
+                                <td>{fournisseur.id}</td>
+                                <td>{fournisseur.nom}</td>
+                                <td>{fournisseur.telephone}</td>
+                                <td>{fournisseur.email}</td>
+                                <td>{fournisseur.adresse}</td>
                                 <td>
                                     <button
                                         className="btn btn-warning btn-sm me-2"
-                                        onClick={() => preparerModification(client)}
+                                        onClick={() => preparerModification(fournisseur)}
                                     >
                                         Modifier
                                     </button>
 
                                     <button
                                         className="btn btn-danger btn-sm"
-                                        onClick={() => supprimerClient(client.id)}
+                                        onClick={() => supprimerFournisseur(fournisseur.id)}
                                     >
                                         Supprimer
                                     </button>
@@ -191,4 +166,4 @@ function Clients() {
     );
 }
 
-export default Clients;
+export default Fournisseurs;
