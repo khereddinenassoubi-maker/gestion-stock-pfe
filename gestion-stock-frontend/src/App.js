@@ -13,7 +13,8 @@ import ListeArticles from "./pages/ListeArticles";
 import Clients from "./pages/Clients";
 import Fournisseurs from "./pages/Fournisseurs";
 import AjouterArticle from "./pages/AjouterArticle";
-
+import Categories from "./pages/Categories";
+import Achats from "./pages/Achats";
 function App() {
     return (
         <BrowserRouter>
@@ -27,6 +28,8 @@ function App() {
                         <Route path="/clients" element={<Clients />} />
                         <Route path="/fournisseurs" element={<Fournisseurs />} />
                         <Route path="/ajouter-article" element={<AjouterArticle />} />
+                        <Route path="/categories" element={<Categories />} />
+                        <Route path="/achats" element={<Achats />} />
                     </Routes>
                 </div>
             </div>

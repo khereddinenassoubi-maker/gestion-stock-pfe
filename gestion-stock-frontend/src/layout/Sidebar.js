@@ -25,6 +25,16 @@ function Sidebar() {
                         Articles
                     </Link>
                 </li>
+                <li className="nav-item mb-3">
+                    <Link to="/categories" className="nav-link text-white">
+                        Catégories
+                    </Link>
+                </li>
+                <li className="nav-item mb-3">
+                    <Link to="/achats" className="nav-link text-white">
+                        Achats
+                    </Link>
+                </li>
 
                 <li className="nav-item mb-3">
                     <Link to="/clients" className="nav-link text-white">
