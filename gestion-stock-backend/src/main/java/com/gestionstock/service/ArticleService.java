@@ -16,8 +16,18 @@ public class ArticleService {
 
     // Ajouter article
     public Article ajouterArticle(Article article) {
+
+        if (article.getCodeBarres() == null || article.getCodeBarres().trim().isEmpty()) {
+            article.setCodeBarres(genererCodeBarres());
+        }
+
         return articleRepository.save(article);
     }
+
+    private String genererCodeBarres() {
+        return "ART" + System.currentTimeMillis();
+    }
+
 
     // Afficher tous les articles
     public List<Article> afficherArticles() {

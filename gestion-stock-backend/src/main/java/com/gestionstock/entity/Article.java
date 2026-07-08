@@ -32,4 +32,8 @@ public class Article {
     private Double seuilStock;
 
     private Boolean actif = true;
+
+    @ManyToOne
+    @JoinColumn(name = "categorie_id")
+    private Categorie categorie;
 }

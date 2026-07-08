@@ -30,15 +30,6 @@ public class ArticleController {
         return articleService.chercherParId(id).orElse(null);
     }
 
-    @GetMapping("/code/{codeBarres}")
-    public Article chercherParCodeBarres(@PathVariable String codeBarres) {
-        return articleService.chercherParCodeBarres(codeBarres).orElse(null);
-    }
-
-    @DeleteMapping("/{id}")
-    public void supprimer(@PathVariable Long id) {
-        articleService.supprimerArticle(id);
-    }
     @PutMapping("/{id}")
     public Article modifier(@PathVariable Long id, @RequestBody Article article) {
         Article ancienArticle = articleService.chercherParId(id).orElse(null);
@@ -57,4 +48,10 @@ public class ArticleController {
         }
 
         return null;
-    }}
+    }
+
+    @DeleteMapping("/{id}")
+    public void supprimer(@PathVariable Long id) {
+        articleService.supprimerArticle(id);
+    }
+}

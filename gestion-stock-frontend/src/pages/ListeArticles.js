@@ -84,9 +84,12 @@ function ListeArticles() {
                                         )}
                                     </td>
                                     <td>
-                                        <button className="btn btn-warning btn-sm me-2">
+                                        <Link
+                                            to={`/modifier-article/${article.id}`}
+                                            className="btn btn-warning btn-sm me-2"
+                                        >
                                             Modifier
-                                        </button>
+                                        </Link>
 
                                         <button
                                             className="btn btn-danger btn-sm"

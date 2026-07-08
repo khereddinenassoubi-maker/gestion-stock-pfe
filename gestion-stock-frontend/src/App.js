@@ -30,6 +30,7 @@ function App() {
                         <Route path="/ajouter-article" element={<AjouterArticle />} />
                         <Route path="/categories" element={<Categories />} />
                         <Route path="/achats" element={<Achats />} />
+                        <Route path="/modifier-article/:id" element={<AjouterArticle />} />
                     </Routes>
                 </div>
             </div>

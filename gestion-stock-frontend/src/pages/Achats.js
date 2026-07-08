@@ -34,7 +34,17 @@ function Achats() {
 
     const modifierLigne = (index, champ, valeur) => {
         const nouvellesLignes = [...lignes];
+
         nouvellesLignes[index][champ] = valeur;
+
+        if (champ === "articleId") {
+            const article = articles.find(a => a.id === Number(valeur));
+
+            if (article) {
+                nouvellesLignes[index].prixAchat = article.prixAchat || 0;
+            }
+        }
+
         setLignes(nouvellesLignes);
     };
 
