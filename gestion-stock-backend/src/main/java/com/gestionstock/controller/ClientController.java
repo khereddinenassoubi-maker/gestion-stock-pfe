@@ -1,11 +1,13 @@
 package com.gestionstock.controller;
 
 import com.gestionstock.dto.ClientDTO;
+import com.gestionstock.dto.PaiementClientDTO;
 import com.gestionstock.service.ClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/clients")
@@ -38,5 +40,16 @@ public class ClientController {
     @DeleteMapping("/{id}")
     public void supprimer(@PathVariable Long id) {
         clientService.supprimerClient(id);
+    }
+
+    @PostMapping("/{id}/paiements")
+    public PaiementClientDTO enregistrerPaiement(@PathVariable Long id,
+                                                  @RequestBody Map<String, Double> body) {
+        return clientService.enregistrerPaiement(id, body.get("montant"));
+    }
+
+    @GetMapping("/{id}/paiements")
+    public List<PaiementClientDTO> afficherPaiements(@PathVariable Long id) {
+        return clientService.afficherPaiements(id);
     }
 }

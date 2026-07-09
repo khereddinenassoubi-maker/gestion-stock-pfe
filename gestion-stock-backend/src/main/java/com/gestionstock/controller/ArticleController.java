@@ -3,7 +3,9 @@ package com.gestionstock.controller;
 import com.gestionstock.entity.Article;
 import com.gestionstock.service.ArticleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -27,30 +29,18 @@ public class ArticleController {
 
     @GetMapping("/{id}")
     public Article chercherParId(@PathVariable Long id) {
-        return articleService.chercherParId(id).orElse(null);
+        return articleService.chercherParId(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Article introuvable."));
     }
 
     @PutMapping("/{id}")
     public Article modifier(@PathVariable Long id, @RequestBody Article article) {
-        Article ancienArticle = articleService.chercherParId(id).orElse(null);
-
-        if (ancienArticle != null) {
-            ancienArticle.setNom(article.getNom());
-            ancienArticle.setDescription(article.getDescription());
-            ancienArticle.setCodeBarres(article.getCodeBarres());
-            ancienArticle.setPrixAchat(article.getPrixAchat());
-            ancienArticle.setPrixVente(article.getPrixVente());
-            ancienArticle.setQuantiteStock(article.getQuantiteStock());
-            ancienArticle.setSeuilStock(article.getSeuilStock());
-            ancienArticle.setActif(article.getActif());
-
-            return articleService.ajouterArticle(ancienArticle);
-        }
-
-        return null;
+        return articleService.modifierArticle(id, article);
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void supprimer(@PathVariable Long id) {
         articleService.supprimerArticle(id);
     }

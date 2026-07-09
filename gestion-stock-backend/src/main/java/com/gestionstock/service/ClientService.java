@@ -1,6 +1,7 @@
 package com.gestionstock.service;
 
 import com.gestionstock.dto.ClientDTO;
+import com.gestionstock.dto.PaiementClientDTO;
 
 import java.util.List;
 
@@ -15,4 +16,8 @@ public interface ClientService {
     ClientDTO modifierClient(Long id, ClientDTO clientDTO);
 
     void supprimerClient(Long id);
+
+    PaiementClientDTO enregistrerPaiement(Long clientId, Double montant);
+
+    List<PaiementClientDTO> afficherPaiements(Long clientId);
 }

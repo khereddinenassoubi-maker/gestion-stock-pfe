@@ -1,26 +1,27 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api, { getErrorMessage } from "../services/api";
 import { Link } from "react-router-dom";
 
 function ListeArticles() {
     const [articles, setArticles] = useState([]);
     const [recherche, setRecherche] = useState("");
+    const [erreur, setErreur] = useState("");
 
     useEffect(() => {
         chargerArticles();
     }, []);
 
     const chargerArticles = () => {
-        axios.get("http://localhost:8080/api/articles")
+        api.get("/articles")
             .then(response => setArticles(response.data))
-            .catch(error => console.log(error));
+            .catch(error => setErreur(getErrorMessage(error, "Impossible de charger les articles.")));
     };
 
     const supprimerArticle = (id) => {
         if (window.confirm("Voulez-vous vraiment supprimer cet article ?")) {
-            axios.delete(`http://localhost:8080/api/articles/${id}`)
+            api.delete(`/articles/${id}`)
                 .then(() => chargerArticles())
-                .catch(error => console.log(error));
+                .catch(error => setErreur(getErrorMessage(error, "Impossible de supprimer l'article.")));
         }
     };
 
@@ -42,6 +43,7 @@ function ListeArticles() {
                 </div>
 
                 <div className="card-body">
+                    {erreur && <div className="alert alert-danger">{erreur}</div>}
                     <input
                         type="text"
                         className="form-control mb-4"

@@ -6,6 +6,7 @@ import com.gestionstock.entity.Achat;
 import com.gestionstock.entity.Article;
 import com.gestionstock.entity.Fournisseur;
 import com.gestionstock.entity.LigneAchat;
+import com.gestionstock.enums.StatutAchat;
 import com.gestionstock.repository.AchatRepository;
 import com.gestionstock.repository.ArticleRepository;
 import com.gestionstock.repository.FournisseurRepository;
@@ -35,6 +36,7 @@ public class AchatServiceImpl implements AchatService {
                 .dateAchat(achatDTO.getDateAchat())
                 .fournisseur(fournisseur)
                 .total(0.0)
+                .statut(StatutAchat.EN_COURS)
                 .build();
 
         Achat savedAchat = achatRepository.save(achat);
@@ -65,6 +67,7 @@ public class AchatServiceImpl implements AchatService {
         }
 
         savedAchat.setTotal(total);
+        savedAchat.setStatut(StatutAchat.RECEPTIONNE);
         achatRepository.save(savedAchat);
 
         return mapToDTO(savedAchat);
@@ -114,6 +117,7 @@ public class AchatServiceImpl implements AchatService {
 
         achat.setDateAchat(achatDTO.getDateAchat());
         achat.setFournisseur(fournisseur);
+        achat.setStatut(StatutAchat.EN_COURS);
 
         double total = 0.0;
 
@@ -143,6 +147,7 @@ public class AchatServiceImpl implements AchatService {
         }
 
         achat.setTotal(total);
+        achat.setStatut(StatutAchat.RECEPTIONNE);
         Achat updatedAchat = achatRepository.save(achat);
 
         return mapToDTO(updatedAchat);
@@ -172,12 +177,25 @@ public class AchatServiceImpl implements AchatService {
             return null;
         }
 
+        List<LigneAchatDTO> lignes = ligneAchatRepository.findByAchat_Id(achat.getId())
+                .stream()
+                .map(ligne -> LigneAchatDTO.builder()
+                        .id(ligne.getId())
+                        .articleId(ligne.getArticle() != null ? ligne.getArticle().getId() : null)
+                        .articleNom(ligne.getArticle() != null ? ligne.getArticle().getNom() : null)
+                        .quantite(ligne.getQuantite())
+                        .prixAchat(ligne.getPrixAchat())
+                        .sousTotal(ligne.getSousTotal())
+                        .build())
+                .collect(Collectors.toList());
+
         return AchatDTO.builder()
                 .id(achat.getId())
                 .dateAchat(achat.getDateAchat())
                 .fournisseurId(achat.getFournisseur() != null ? achat.getFournisseur().getId() : null)
                 .fournisseurNom(achat.getFournisseur() != null ? achat.getFournisseur().getNom() : null)
                 .total(achat.getTotal())
+                .lignes(lignes)
                 .build();
     }
 }

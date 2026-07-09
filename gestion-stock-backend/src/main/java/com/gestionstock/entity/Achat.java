@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import com.gestionstock.enums.StatutAchat;
 
 @Entity
 @Table(name = "achat")
@@ -21,6 +22,9 @@ public class Achat {
     private LocalDate dateAchat;
 
     private Double total;
+
+    @Enumerated(EnumType.STRING)
+    private StatutAchat statut;
 
     @ManyToOne
     @JoinColumn(name = "fournisseur_id")

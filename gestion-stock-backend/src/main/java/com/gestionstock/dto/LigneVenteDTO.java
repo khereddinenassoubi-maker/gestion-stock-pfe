@@ -1,0 +1,13 @@
+package com.gestionstock.dto;
+
+import lombok.*;
+
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class LigneVenteDTO {
+    private Long id;
+    private Long articleId;
+    private String articleNom;
+    private Double quantite;
+    private Double prixVente;
+    private Double sousTotal;
+}
