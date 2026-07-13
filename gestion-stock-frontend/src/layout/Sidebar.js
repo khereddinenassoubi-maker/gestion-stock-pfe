@@ -47,15 +47,14 @@ function Sidebar({ role, nomUtilisateur, onLogout }) {
                 </li>
 
                 <li className="nav-item mb-3">
-                    <Link to="/stock" className="nav-link text-white">Stock</Link>
-                </li>
-
-                <li className="nav-item mb-3">
                     <Link to="/clients" className="nav-link text-white">Clients / credits</Link>
                 </li>
 
                 {estAdmin && (
                     <>
+                        <li className="nav-item mb-3">
+                            <Link to="/stock" className="nav-link text-white">Stock</Link>
+                        </li>
                         <li className="nav-item mb-3">
                             <Link to="/fournisseurs" className="nav-link text-white">Fournisseurs</Link>
                         </li>
