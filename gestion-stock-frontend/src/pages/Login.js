@@ -24,7 +24,7 @@ function Login({ onLogin }) {
             });
             onLogin(data);
         } catch (error) {
-            setErreur(getErrorMessage(error, "Connexion impossible."));
+            setErreur(getErrorMessage(error, "Connexion impossible. Verifiez le backend et les identifiants."));
         } finally {
             setChargement(false);
         }

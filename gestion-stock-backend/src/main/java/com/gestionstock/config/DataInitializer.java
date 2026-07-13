@@ -15,7 +15,7 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (utilisateurRepository.count() > 0) {
+        if (utilisateurRepository.findByUsername("admin").isPresent()) {
             return;
         }
 
