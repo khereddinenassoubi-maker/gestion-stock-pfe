@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import api, { getErrorMessage } from "../services/api";
 
 const aujourdhui = () => new Date().toISOString().slice(0, 10);
@@ -143,10 +144,10 @@ function Dashboard({ role }) {
                 </div>
 
                 <div className="row g-3">
-                    <Carte couleur="success" titre="Ventes" valeur="Saisie des ventes" />
-                    <Carte couleur="info" titre="Achats" valeur="Saisie des achats" />
-                    <Carte couleur="primary" titre="Caisse" valeur="Ouverture / cloture" />
-                    <Carte couleur="secondary" titre="Clients" valeur="Credits clients" />
+                    <Carte couleur="success" titre="Ventes" valeur="Saisie des ventes" lien="/ventes" />
+                    <Carte couleur="info" titre="Achats" valeur="Saisie des achats" lien="/achats" />
+                    <Carte couleur="primary" titre="Caisse" valeur="Ouverture / cloture" lien="/caisse" />
+                    <Carte couleur="secondary" titre="Clients" valeur="Credits clients" lien="/clients" />
                 </div>
             </div>
         );
@@ -275,15 +276,24 @@ function Dashboard({ role }) {
     );
 }
 
-function Carte({ couleur, titre, valeur, texteFonce }) {
-    return (
-        <div className="col-md-3">
-            <div className={`card bg-${couleur} ${texteFonce ? "text-dark" : "text-white"} shadow h-100`}>
+function Carte({ couleur, titre, valeur, texteFonce, lien }) {
+    const contenu = (
+        <div className={`card bg-${couleur} ${texteFonce ? "text-dark" : "text-white"} shadow h-100`}
+             style={lien ? { cursor: "pointer" } : {}}>
                 <div className="card-body">
                     <h6>{titre}</h6>
                     <h3>{valeur}</h3>
                 </div>
-            </div>
+        </div>
+    );
+
+    return (
+        <div className="col-md-3">
+            {lien ? (
+                <Link to={lien} className="text-decoration-none">
+                    {contenu}
+                </Link>
+            ) : contenu}
         </div>
     );
 }
