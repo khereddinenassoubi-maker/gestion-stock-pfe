@@ -98,6 +98,7 @@ function Caisse({ role, nomUtilisateur }) {
     const totalEspece = caissesVisibles.reduce((sum, c) => sum + Number(c.totalEspece || 0), 0);
     const totalCredit = caissesVisibles.reduce((sum, c) => sum + Number(c.totalCredit || 0), 0);
     const totalAchats = caissesVisibles.reduce((sum, c) => sum + Number(c.totalAchats || 0), 0);
+    const totalEncaissementsCredit = caissesVisibles.reduce((sum, c) => sum + Number(c.totalEncaissementsCredit || 0), 0);
     const totalFondAjoute = caissesVisibles.reduce((sum, c) => sum + Number(c.fondSupplementaire || 0), 0);
     const totalSolde = caissesVisibles.reduce((sum, c) => sum + Number(c.soldeTheorique || 0), 0);
     const totalEcart = caissesVisibles.reduce((sum, c) => sum + Number(c.ecart || 0), 0);
@@ -196,6 +197,9 @@ function Caisse({ role, nomUtilisateur }) {
                             <div className="border rounded p-3 bg-white">Achats : {totalAchats.toFixed(3)} DT</div>
                         </div>
                         <div className="col-md-4 mt-2">
+                            <div className="border rounded p-3 bg-white">Encaissements credit : {totalEncaissementsCredit.toFixed(3)} DT</div>
+                        </div>
+                        <div className="col-md-4 mt-2">
                             <div className="border rounded p-3 bg-white">Fond ajoute : {totalFondAjoute.toFixed(3)} DT</div>
                         </div>
                         <div className="col-md-4 mt-2">
@@ -217,6 +221,7 @@ function Caisse({ role, nomUtilisateur }) {
                             <th>Especes</th>
                             <th>Credit</th>
                             <th>Achats</th>
+                            <th>Enc. credit</th>
                             <th>Solde</th>
                             <th>Ecart</th>
                             <th>Statut</th>
@@ -233,6 +238,7 @@ function Caisse({ role, nomUtilisateur }) {
                                     <td>{Number(caisse.totalEspece || 0).toFixed(3)} DT</td>
                                     <td>{Number(caisse.totalCredit || 0).toFixed(3)} DT</td>
                                     <td>{Number(caisse.totalAchats || 0).toFixed(3)} DT</td>
+                                    <td>{Number(caisse.totalEncaissementsCredit || 0).toFixed(3)} DT</td>
                                     <td>{Number(caisse.soldeTheorique || 0).toFixed(3)} DT</td>
                                     <td>{Number(caisse.ecart || 0).toFixed(3)} DT</td>
                                     <td>

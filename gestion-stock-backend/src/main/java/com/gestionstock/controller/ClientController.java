@@ -44,8 +44,10 @@ public class ClientController {
 
     @PostMapping("/{id}/paiements")
     public PaiementClientDTO enregistrerPaiement(@PathVariable Long id,
-                                                  @RequestBody Map<String, Double> body) {
-        return clientService.enregistrerPaiement(id, body.get("montant"));
+                                                  @RequestBody Map<String, Object> body) {
+        Double montant = body.get("montant") instanceof Number number ? number.doubleValue() : null;
+        String caissierNom = body.get("caissierNom") != null ? String.valueOf(body.get("caissierNom")) : null;
+        return clientService.enregistrerPaiement(id, montant, caissierNom);
     }
 
     @GetMapping("/{id}/paiements")

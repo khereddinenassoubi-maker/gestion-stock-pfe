@@ -10,4 +10,5 @@ public class PaiementClientDTO {
     private LocalDateTime datePaiement;
     private Double montant;
     private Double creditRestant;
+    private String caissierNom;
 }

@@ -86,7 +86,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @Transactional
-    public PaiementClientDTO enregistrerPaiement(Long clientId, Double montant) {
+    public PaiementClientDTO enregistrerPaiement(Long clientId, Double montant, String caissierNom) {
         Client client = clientRepository.findById(clientId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Client introuvable."));
         if (montant == null || montant <= 0) {
@@ -100,7 +100,11 @@ public class ClientServiceImpl implements ClientService {
         client.setCredit(credit - montant);
         clientRepository.save(client);
         PaiementClient paiement = paiementClientRepository.save(PaiementClient.builder()
-                .client(client).montant(montant).datePaiement(LocalDateTime.now()).build());
+                .client(client)
+                .montant(montant)
+                .caissierNom(nomCaissier(caissierNom))
+                .datePaiement(LocalDateTime.now())
+                .build());
         return mapPaiement(paiement, client.getCredit());
     }
 
@@ -114,7 +118,13 @@ public class ClientServiceImpl implements ClientService {
         return PaiementClientDTO.builder().id(paiement.getId())
                 .clientId(paiement.getClient().getId())
                 .datePaiement(paiement.getDatePaiement()).montant(paiement.getMontant())
-                .creditRestant(creditRestant).build();
+                .creditRestant(creditRestant)
+                .caissierNom(paiement.getCaissierNom())
+                .build();
+    }
+
+    private String nomCaissier(String nom) {
+        return nom == null || nom.isBlank() ? "Caissier" : nom.trim();
     }
 
     private ClientDTO mapToDTO(Client client) {

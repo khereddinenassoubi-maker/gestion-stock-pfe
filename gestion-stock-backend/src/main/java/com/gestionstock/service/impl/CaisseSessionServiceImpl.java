@@ -3,12 +3,14 @@ package com.gestionstock.service.impl;
 import com.gestionstock.dto.CaisseSessionDTO;
 import com.gestionstock.entity.Achat;
 import com.gestionstock.entity.CaisseSession;
+import com.gestionstock.entity.PaiementClient;
 import com.gestionstock.entity.Vente;
 import com.gestionstock.enums.ModePaiement;
 import com.gestionstock.enums.StatutCaisse;
 import com.gestionstock.enums.StatutVente;
 import com.gestionstock.repository.CaisseSessionRepository;
 import com.gestionstock.repository.AchatRepository;
+import com.gestionstock.repository.PaiementClientRepository;
 import com.gestionstock.repository.VenteRepository;
 import com.gestionstock.service.CaisseSessionService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,7 @@ public class CaisseSessionServiceImpl implements CaisseSessionService {
     private final CaisseSessionRepository caisseRepository;
     private final VenteRepository venteRepository;
     private final AchatRepository achatRepository;
+    private final PaiementClientRepository paiementClientRepository;
 
     @Override
     public CaisseSessionDTO ouvrir(CaisseSessionDTO dto) {
@@ -45,6 +48,7 @@ public class CaisseSessionServiceImpl implements CaisseSessionService {
                 .totalEspece(0.0)
                 .totalCredit(0.0)
                 .totalAchats(0.0)
+                .totalEncaissementsCredit(0.0)
                 .soldeTheorique(valeur(dto.getMontantOuverture()))
                 .ecart(0.0)
                 .statut(StatutCaisse.OUVERTE)
@@ -108,6 +112,7 @@ public class CaisseSessionServiceImpl implements CaisseSessionService {
         double espece = 0.0;
         double credit = 0.0;
         double achats = 0.0;
+        double encaissementsCredit = 0.0;
         for (Vente vente : venteRepository.findAll()) {
             if (vente.getDateVente() == null || vente.getStatut() == StatutVente.ANNULEE) continue;
             if (vente.getCaissierNom() == null || !vente.getCaissierNom().equalsIgnoreCase(caissierNom)) continue;
@@ -124,17 +129,26 @@ public class CaisseSessionServiceImpl implements CaisseSessionService {
             if (achat.getDateAchat().isBefore(debut) || achat.getDateAchat().isAfter(fin)) continue;
             achats += valeur(achat.getTotal());
         }
-        return new TotauxCaisse(espece, credit, achats);
+        for (PaiementClient paiement : paiementClientRepository.findAll()) {
+            if (paiement.getDatePaiement() == null) continue;
+            if (paiement.getCaissierNom() == null || !paiement.getCaissierNom().equalsIgnoreCase(caissierNom)) continue;
+            LocalDate datePaiement = paiement.getDatePaiement().toLocalDate();
+            if (datePaiement.isBefore(debut) || datePaiement.isAfter(fin)) continue;
+            encaissementsCredit += valeur(paiement.getMontant());
+        }
+        return new TotauxCaisse(espece, credit, achats, encaissementsCredit);
     }
 
     private void appliquerTotaux(CaisseSession caisse, TotauxCaisse totaux) {
         caisse.setTotalEspece(totaux.espece);
         caisse.setTotalCredit(totaux.credit);
         caisse.setTotalAchats(totaux.achats);
+        caisse.setTotalEncaissementsCredit(totaux.encaissementsCredit);
         caisse.setSoldeTheorique(
                 valeur(caisse.getMontantOuverture())
                         + valeur(caisse.getFondSupplementaire())
                         + totaux.espece
+                        + totaux.encaissementsCredit
                         - totaux.achats
         );
     }
@@ -155,6 +169,7 @@ public class CaisseSessionServiceImpl implements CaisseSessionService {
                 .totalEspece(caisse.getTotalEspece())
                 .totalCredit(caisse.getTotalCredit())
                 .totalAchats(caisse.getTotalAchats())
+                .totalEncaissementsCredit(caisse.getTotalEncaissementsCredit())
                 .soldeTheorique(caisse.getSoldeTheorique())
                 .ecart(caisse.getEcart())
                 .statut(caisse.getStatut() != null ? caisse.getStatut().name() : null)
@@ -169,5 +184,5 @@ public class CaisseSessionServiceImpl implements CaisseSessionService {
         return valeur == null ? 0.0 : valeur;
     }
 
-    private record TotauxCaisse(double espece, double credit, double achats) {}
+    private record TotauxCaisse(double espece, double credit, double achats, double encaissementsCredit) {}
 }

@@ -13,6 +13,7 @@ public class PaiementClient {
     private Long id;
     private LocalDateTime datePaiement;
     private Double montant;
+    private String caissierNom;
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;

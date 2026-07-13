@@ -21,6 +21,7 @@ import Utilisateurs from "./pages/Utilisateurs";
 import ChoixRole from "./pages/ChoixRole";
 import Caisse from "./pages/Caisse";
 import Inventaire from "./pages/Inventaire";
+import Stock from "./pages/Stock";
 
 function App() {
     const [role, setRole] = useState(localStorage.getItem("roleUtilisateur") || "");
@@ -56,6 +57,7 @@ function App() {
                         <Route path="/" element={<Dashboard role={role} nomUtilisateur={nomUtilisateur} />} />
                         <Route path="/ventes" element={<Ventes />} />
                         <Route path="/caisse" element={<Caisse role={role} nomUtilisateur={nomUtilisateur} />} />
+                        <Route path="/stock" element={<Stock />} />
                         <Route path="/clients" element={<Clients />} />
                         <Route path="/articles" element={adminSeulement(<ListeArticles />)} />
                         <Route path="/fournisseurs" element={adminSeulement(<Fournisseurs />)} />

@@ -37,6 +37,8 @@ public class CaisseSession {
 
     private Double totalAchats;
 
+    private Double totalEncaissementsCredit;
+
     private Double soldeTheorique;
 
     private Double ecart;

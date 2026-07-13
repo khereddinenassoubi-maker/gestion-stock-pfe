@@ -17,7 +17,7 @@ public interface ClientService {
 
     void supprimerClient(Long id);
 
-    PaiementClientDTO enregistrerPaiement(Long clientId, Double montant);
+    PaiementClientDTO enregistrerPaiement(Long clientId, Double montant, String caissierNom);
 
     List<PaiementClientDTO> afficherPaiements(Long clientId);
 }

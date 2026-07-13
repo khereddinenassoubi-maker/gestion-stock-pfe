@@ -124,7 +124,8 @@ function Clients() {
                 return;
             }
             await api.post(`/clients/${clientPaiement.id}/paiements`, {
-                montant: montantSaisi
+                montant: montantSaisi,
+                caissierNom: localStorage.getItem("nomUtilisateur") || "Caissier"
             });
             setMessage("Avance client enregistrée.");
             setClientPaiement(null);

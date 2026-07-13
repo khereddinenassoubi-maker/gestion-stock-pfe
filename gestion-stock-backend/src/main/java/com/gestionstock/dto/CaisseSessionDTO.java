@@ -20,6 +20,7 @@ public class CaisseSessionDTO {
     private Double totalEspece;
     private Double totalCredit;
     private Double totalAchats;
+    private Double totalEncaissementsCredit;
     private Double soldeTheorique;
     private Double ecart;
     private String statut;
