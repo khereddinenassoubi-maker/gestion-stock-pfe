@@ -2,8 +2,11 @@ package com.gestionstock.service.impl;
 
 import com.gestionstock.dto.ClientDTO;
 import com.gestionstock.dto.PaiementClientDTO;
+import com.gestionstock.entity.CaisseSession;
 import com.gestionstock.entity.Client;
 import com.gestionstock.entity.PaiementClient;
+import com.gestionstock.enums.StatutCaisse;
+import com.gestionstock.repository.CaisseSessionRepository;
 import com.gestionstock.repository.ClientRepository;
 import com.gestionstock.repository.PaiementClientRepository;
 import com.gestionstock.service.ClientService;
@@ -23,6 +26,7 @@ public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
     private final PaiementClientRepository paiementClientRepository;
+    private final CaisseSessionRepository caisseSessionRepository;
 
     @Override
     public ClientDTO ajouterClient(ClientDTO clientDTO) {
@@ -89,6 +93,8 @@ public class ClientServiceImpl implements ClientService {
     @Override
     @Transactional
     public PaiementClientDTO enregistrerPaiement(Long clientId, Double montant, String caissierNom) {
+        String caissier = nomCaissier(caissierNom);
+        verifierCaisseOuverte(caissier);
         Client client = clientRepository.findById(clientId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Client introuvable."));
         if (montant == null || montant <= 0) {
@@ -104,7 +110,7 @@ public class ClientServiceImpl implements ClientService {
         PaiementClient paiement = paiementClientRepository.save(PaiementClient.builder()
                 .client(client)
                 .montant(montant)
-                .caissierNom(nomCaissier(caissierNom))
+                .caissierNom(caissier)
                 .datePaiement(LocalDateTime.now())
                 .build());
         return mapPaiement(paiement, client.getCredit());
@@ -127,6 +133,13 @@ public class ClientServiceImpl implements ClientService {
 
     private String nomCaissier(String nom) {
         return nom == null || nom.isBlank() ? "Caissier" : nom.trim();
+    }
+
+    private CaisseSession verifierCaisseOuverte(String caissierNom) {
+        return caisseSessionRepository
+                .findFirstByCaissierNomAndStatutOrderByDateOuvertureDesc(caissierNom, StatutCaisse.OUVERTE)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Caisse fermee. Ouvrir la caisse avant d'effectuer cette operation."));
     }
 
     private void valider(ClientDTO clientDTO) {

@@ -3,6 +3,7 @@ package com.gestionstock.service.impl;
 import com.gestionstock.dto.*;
 import com.gestionstock.entity.*;
 import com.gestionstock.enums.ModePaiement;
+import com.gestionstock.enums.StatutCaisse;
 import com.gestionstock.enums.StatutCredit;
 import com.gestionstock.enums.StatutVente;
 import com.gestionstock.repository.*;
@@ -25,11 +26,13 @@ public class VenteServiceImpl implements VenteService {
     private final ClientRepository clientRepository;
     private final PaiementRepository paiementRepository;
     private final CreditClientRepository creditClientRepository;
+    private final CaisseSessionRepository caisseSessionRepository;
 
     @Override
     @Transactional
     public VenteDTO enregistrer(VenteDTO dto) {
         valider(dto);
+        verifierCaisseOuverte(dto.getCaissierNom());
         Client client = chercherClient(dto);
         Vente vente = venteRepository.save(Vente.builder()
                 .dateVente(dto.getDateVente() != null ? dto.getDateVente() : LocalDate.now())
@@ -60,6 +63,7 @@ public class VenteServiceImpl implements VenteService {
     @Transactional
     public VenteDTO modifier(Long id, VenteDTO dto) {
         valider(dto);
+        verifierCaisseOuverte(dto.getCaissierNom());
         Vente vente = trouver(id);
         ajusterCredit(vente.getClient(), vente.getModePaiement(), -valeur(vente.getTotal()));
         restaurerStock(id);
@@ -150,6 +154,9 @@ public class VenteServiceImpl implements VenteService {
     }
 
     private void valider(VenteDTO dto) {
+        if (dto.getCaissierNom() == null || dto.getCaissierNom().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Caissier obligatoire.");
+        }
         if (dto.getLignes() == null || dto.getLignes().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La vente doit contenir au moins un article.");
         }
@@ -206,6 +213,13 @@ public class VenteServiceImpl implements VenteService {
 
     private double valeur(Double valeur) {
         return valeur == null ? 0.0 : valeur;
+    }
+
+    private void verifierCaisseOuverte(String caissierNom) {
+        caisseSessionRepository
+                .findFirstByCaissierNomAndStatutOrderByDateOuvertureDesc(caissierNom.trim(), StatutCaisse.OUVERTE)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Caisse fermee. Ouvrir la caisse avant d'effectuer cette operation."));
     }
 
     private Vente trouver(Long id) {
