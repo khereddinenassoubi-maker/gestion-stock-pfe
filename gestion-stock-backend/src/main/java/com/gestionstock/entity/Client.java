@@ -16,15 +16,22 @@ public class Client {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 120)
     private String nom;
 
+    @Column(length = 120)
     private String prenom;
 
+    @Column(length = 30)
     private String telephone;
 
+    @Column(length = 120)
     private String email;
 
+    @Column(length = 255)
     private String adresse;
 
+    @Builder.Default
+    @Column(nullable = false)
     private Double credit = 0.0;
 }

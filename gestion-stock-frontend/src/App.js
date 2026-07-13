@@ -18,7 +18,7 @@ import Categories from "./pages/Categories";
 import Achats from "./pages/Achats";
 import Ventes from "./pages/Ventes";
 import Utilisateurs from "./pages/Utilisateurs";
-import ChoixRole from "./pages/ChoixRole";
+import Login from "./pages/Login";
 import Caisse from "./pages/Caisse";
 import Inventaire from "./pages/Inventaire";
 import Stock from "./pages/Stock";
@@ -27,16 +27,19 @@ function App() {
     const [role, setRole] = useState(localStorage.getItem("roleUtilisateur") || "");
     const [nomUtilisateur, setNomUtilisateur] = useState(localStorage.getItem("nomUtilisateur") || "");
 
-    const choisirRole = (nouveauRole, nom) => {
-        localStorage.setItem("roleUtilisateur", nouveauRole);
+    const connecter = (utilisateur) => {
+        const nom = `${utilisateur.nom || ""} ${utilisateur.prenom || ""}`.trim() || utilisateur.username;
+        localStorage.setItem("roleUtilisateur", utilisateur.role);
         localStorage.setItem("nomUtilisateur", nom);
-        setRole(nouveauRole);
+        localStorage.setItem("utilisateurId", utilisateur.id);
+        setRole(utilisateur.role);
         setNomUtilisateur(nom);
     };
 
     const deconnecter = () => {
         localStorage.removeItem("roleUtilisateur");
         localStorage.removeItem("nomUtilisateur");
+        localStorage.removeItem("utilisateurId");
         setRole("");
         setNomUtilisateur("");
     };
@@ -44,7 +47,7 @@ function App() {
     const adminSeulement = (element) => role === "ADMIN" ? element : <Navigate to="/" replace />;
 
     if (!role) {
-        return <ChoixRole onChoisirRole={choisirRole} />;
+        return <Login onLogin={connecter} />;
     }
 
     return (

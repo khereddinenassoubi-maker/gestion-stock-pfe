@@ -13,13 +13,19 @@ public class Vente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private LocalDate dateVente;
+
+    @Column(nullable = false)
     private Double total;
     @Enumerated(EnumType.STRING)
     private ModePaiement modePaiement;
     @Enumerated(EnumType.STRING)
     private StatutVente statut;
+    @Column(nullable = false)
     private Double reste;
+
+    @Column(nullable = false, length = 100)
     private String caissierNom;
     @ManyToOne
     @JoinColumn(name = "client_id")

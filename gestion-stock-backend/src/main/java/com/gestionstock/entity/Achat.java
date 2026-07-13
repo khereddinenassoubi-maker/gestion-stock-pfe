@@ -19,10 +19,13 @@ public class Achat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private LocalDate dateAchat;
 
+    @Column(nullable = false)
     private Double total;
 
+    @Column(nullable = false, length = 100)
     private String caissierNom;
 
     @Enumerated(EnumType.STRING)

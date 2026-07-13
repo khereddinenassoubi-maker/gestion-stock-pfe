@@ -19,6 +19,11 @@ public class UtilisateurController {
         return utilisateurService.enregistrer(dto);
     }
 
+    @PostMapping("/login")
+    public UtilisateurDTO login(@RequestBody UtilisateurDTO dto) {
+        return utilisateurService.login(dto);
+    }
+
     @GetMapping
     public List<UtilisateurDTO> afficher() {
         return utilisateurService.afficher();

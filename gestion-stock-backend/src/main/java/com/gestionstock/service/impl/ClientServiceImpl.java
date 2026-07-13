@@ -26,13 +26,14 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public ClientDTO ajouterClient(ClientDTO clientDTO) {
+        valider(clientDTO);
 
         Client client = Client.builder()
-                .nom(clientDTO.getNom())
-                .prenom(clientDTO.getPrenom())
-                .telephone(clientDTO.getTelephone())
-                .email(clientDTO.getEmail())
-                .adresse(clientDTO.getAdresse())
+                .nom(nettoyer(clientDTO.getNom()))
+                .prenom(nettoyer(clientDTO.getPrenom()))
+                .telephone(nettoyer(clientDTO.getTelephone()))
+                .email(nettoyer(clientDTO.getEmail()))
+                .adresse(nettoyer(clientDTO.getAdresse()))
                 .credit(0.0)
                 .build();
 
@@ -64,12 +65,13 @@ public class ClientServiceImpl implements ClientService {
         Client client = clientRepository.findById(id).orElse(null);
 
         if (client != null) {
+            valider(clientDTO);
 
-            client.setNom(clientDTO.getNom());
-            client.setPrenom(clientDTO.getPrenom());
-            client.setTelephone(clientDTO.getTelephone());
-            client.setEmail(clientDTO.getEmail());
-            client.setAdresse(clientDTO.getAdresse());
+            client.setNom(nettoyer(clientDTO.getNom()));
+            client.setPrenom(nettoyer(clientDTO.getPrenom()));
+            client.setTelephone(nettoyer(clientDTO.getTelephone()));
+            client.setEmail(nettoyer(clientDTO.getEmail()));
+            client.setAdresse(nettoyer(clientDTO.getAdresse()));
             Client updatedClient = clientRepository.save(client);
 
             return mapToDTO(updatedClient);
@@ -125,6 +127,19 @@ public class ClientServiceImpl implements ClientService {
 
     private String nomCaissier(String nom) {
         return nom == null || nom.isBlank() ? "Caissier" : nom.trim();
+    }
+
+    private void valider(ClientDTO clientDTO) {
+        if (clientDTO.getNom() == null || clientDTO.getNom().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Le nom du client est obligatoire.");
+        }
+        if (clientDTO.getEmail() != null && !clientDTO.getEmail().isBlank() && !clientDTO.getEmail().contains("@")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email client invalide.");
+        }
+    }
+
+    private String nettoyer(String valeur) {
+        return valeur == null ? null : valeur.trim();
     }
 
     private ClientDTO mapToDTO(Client client) {

@@ -5,7 +5,9 @@ import com.gestionstock.entity.Fournisseur;
 import com.gestionstock.repository.FournisseurRepository;
 import com.gestionstock.service.FournisseurService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,11 +20,12 @@ public class FournisseurServiceImpl implements FournisseurService {
 
     @Override
     public FournisseurDTO ajouterFournisseur(FournisseurDTO fournisseurDTO) {
+        valider(fournisseurDTO);
         Fournisseur fournisseur = Fournisseur.builder()
-                .nom(fournisseurDTO.getNom())
-                .telephone(fournisseurDTO.getTelephone())
-                .email(fournisseurDTO.getEmail())
-                .adresse(fournisseurDTO.getAdresse())
+                .nom(nettoyer(fournisseurDTO.getNom()))
+                .telephone(nettoyer(fournisseurDTO.getTelephone()))
+                .email(nettoyer(fournisseurDTO.getEmail()))
+                .adresse(nettoyer(fournisseurDTO.getAdresse()))
                 .build();
 
         return mapToDTO(fournisseurRepository.save(fournisseur));
@@ -47,10 +50,11 @@ public class FournisseurServiceImpl implements FournisseurService {
         Fournisseur fournisseur = fournisseurRepository.findById(id).orElse(null);
 
         if (fournisseur != null) {
-            fournisseur.setNom(fournisseurDTO.getNom());
-            fournisseur.setTelephone(fournisseurDTO.getTelephone());
-            fournisseur.setEmail(fournisseurDTO.getEmail());
-            fournisseur.setAdresse(fournisseurDTO.getAdresse());
+            valider(fournisseurDTO);
+            fournisseur.setNom(nettoyer(fournisseurDTO.getNom()));
+            fournisseur.setTelephone(nettoyer(fournisseurDTO.getTelephone()));
+            fournisseur.setEmail(nettoyer(fournisseurDTO.getEmail()));
+            fournisseur.setAdresse(nettoyer(fournisseurDTO.getAdresse()));
 
             return mapToDTO(fournisseurRepository.save(fournisseur));
         }
@@ -61,6 +65,19 @@ public class FournisseurServiceImpl implements FournisseurService {
     @Override
     public void supprimerFournisseur(Long id) {
         fournisseurRepository.deleteById(id);
+    }
+
+    private void valider(FournisseurDTO fournisseurDTO) {
+        if (fournisseurDTO.getNom() == null || fournisseurDTO.getNom().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Le nom du fournisseur est obligatoire.");
+        }
+        if (fournisseurDTO.getEmail() != null && !fournisseurDTO.getEmail().isBlank() && !fournisseurDTO.getEmail().contains("@")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email fournisseur invalide.");
+        }
+    }
+
+    private String nettoyer(String valeur) {
+        return valeur == null ? null : valeur.trim();
     }
 
     private FournisseurDTO mapToDTO(Fournisseur fournisseur) {

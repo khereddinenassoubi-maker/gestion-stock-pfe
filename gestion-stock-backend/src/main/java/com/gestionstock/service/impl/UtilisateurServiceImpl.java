@@ -22,9 +22,30 @@ public class UtilisateurServiceImpl implements UtilisateurService {
     @Override
     public UtilisateurDTO enregistrer(UtilisateurDTO dto) {
         valider(dto);
+        utilisateurRepository.findByUsername(dto.getUsername().trim())
+                .ifPresent(u -> {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ce nom d'utilisateur existe deja.");
+                });
         Utilisateur utilisateur = creerSelonRole(dto);
         remplirCommun(utilisateur, dto);
         return mapper(utilisateurRepository.save(utilisateur));
+    }
+
+    @Override
+    public UtilisateurDTO login(UtilisateurDTO dto) {
+        if (dto.getUsername() == null || dto.getUsername().isBlank()
+                || dto.getPassword() == null || dto.getPassword().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nom d'utilisateur et mot de passe obligatoires.");
+        }
+        Utilisateur utilisateur = utilisateurRepository.findByUsername(dto.getUsername().trim())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Identifiants incorrects."));
+        if (!utilisateur.getPassword().equals(dto.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Identifiants incorrects.");
+        }
+        if (!Boolean.TRUE.equals(utilisateur.getActif())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Utilisateur desactive.");
+        }
+        return mapper(utilisateur);
     }
 
     @Override
@@ -63,13 +84,13 @@ public class UtilisateurServiceImpl implements UtilisateurService {
     }
 
     private void remplirCommun(Utilisateur utilisateur, UtilisateurDTO dto) {
-        utilisateur.setUsername(dto.getUsername());
+        utilisateur.setUsername(dto.getUsername() != null ? dto.getUsername().trim() : null);
         if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
             utilisateur.setPassword(dto.getPassword());
         }
-        utilisateur.setNom(dto.getNom());
-        utilisateur.setPrenom(dto.getPrenom());
-        utilisateur.setEmail(dto.getEmail());
+        utilisateur.setNom(dto.getNom() != null ? dto.getNom().trim() : null);
+        utilisateur.setPrenom(dto.getPrenom() != null ? dto.getPrenom().trim() : null);
+        utilisateur.setEmail(dto.getEmail() != null ? dto.getEmail().trim() : null);
         utilisateur.setRole("ADMIN".equalsIgnoreCase(dto.getRole()) ? Role.ADMIN : Role.CAISSIER);
         utilisateur.setActif(dto.getActif() == null || dto.getActif());
     }
@@ -80,6 +101,9 @@ public class UtilisateurServiceImpl implements UtilisateurService {
         }
         if (dto.getPassword() == null || dto.getPassword().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Le mot de passe est obligatoire.");
+        }
+        if (dto.getNom() == null || dto.getNom().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Le nom est obligatoire.");
         }
     }
 
