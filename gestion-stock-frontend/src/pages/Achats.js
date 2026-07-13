@@ -150,6 +150,7 @@ function Achats() {
         const achat = {
             dateAchat,
             fournisseurId: Number(fournisseurId),
+            caissierNom: localStorage.getItem("nomUtilisateur") || "Caissier",
             lignes: lignes.map((ligne) => ({
                 articleId: Number(ligne.articleId),
                 quantite: Number(ligne.quantite),
@@ -404,6 +405,7 @@ function Achats() {
                         <tr>
                             <th>ID</th>
                             <th>Date</th>
+                            <th>Caissier</th>
                             <th>Fournisseur</th>
                             <th>Total</th>
                             <th>Actions</th>
@@ -415,6 +417,7 @@ function Achats() {
                             <tr key={achat.id}>
                                 <td>{achat.id}</td>
                                 <td>{achat.dateAchat}</td>
+                                <td>{achat.caissierNom || "-"}</td>
                                 <td>{achat.fournisseurNom}</td>
                                 <td>{formaterMontant(achat.total)} DT</td>
                                 <td>

@@ -4,21 +4,21 @@
 
 Conception et réalisation d'une application web de gestion de stock, achats, ventes, caisse et crédits clients
 
-## Informations à compléter
+## Informations du projet
 
-- Etudiant(e) : ........................................
-- Encadrant(e) : ........................................
-- Etablissement : ........................................
-- Filière : ........................................
+- Réalisé par : Khereddine Nassoubi et Hamza Jaliliya
+- Encadrant : Walid Hammami
+- Etablissement : à compléter selon l'exemple fourni
+- Filière : à compléter
 - Année universitaire : 2025 / 2026
 
 ---
 
 # Remerciements
 
-Je tiens à remercier toutes les personnes qui ont contribué à la réalisation de ce projet de fin d'études. Mes remerciements s'adressent particulièrement à mon encadrant(e), pour son suivi, ses conseils et ses orientations durant toutes les étapes du projet.
+Nous tenons à remercier toutes les personnes qui ont contribué à la réalisation de ce projet de fin d'études. Nos remerciements s'adressent particulièrement à notre encadrant, Monsieur Walid Hammami, pour son suivi, ses conseils et ses orientations durant toutes les étapes du projet.
 
-Je remercie également les enseignants et le personnel de l'établissement pour la formation reçue, ainsi que ma famille et mes proches pour leur soutien moral.
+Nous remercions également les enseignants et le personnel de l'établissement pour la formation reçue, ainsi que nos familles et nos proches pour leur soutien moral.
 
 ---
 

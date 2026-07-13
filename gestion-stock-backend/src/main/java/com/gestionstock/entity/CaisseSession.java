@@ -27,11 +27,17 @@ public class CaisseSession {
 
     private Double montantOuverture;
 
+    private Double fondSupplementaire;
+
     private Double montantCloture;
 
     private Double totalEspece;
 
     private Double totalCredit;
+
+    private Double totalAchats;
+
+    private Double soldeTheorique;
 
     private Double ecart;
 

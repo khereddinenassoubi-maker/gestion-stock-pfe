@@ -6,6 +6,7 @@ function Caisse({ role, nomUtilisateur }) {
     const [caisses, setCaisses] = useState([]);
     const [caisseOuverte, setCaisseOuverte] = useState(null);
     const [montantOuverture, setMontantOuverture] = useState(0);
+    const [fondAjoute, setFondAjoute] = useState(0);
     const [montantCloture, setMontantCloture] = useState(0);
     const [filtreCaissier, setFiltreCaissier] = useState("");
     const [dateDebut, setDateDebut] = useState("");
@@ -64,6 +65,22 @@ function Caisse({ role, nomUtilisateur }) {
         }
     };
 
+    const ajouterFond = async () => {
+        if (!caisseOuverte) return;
+        try {
+            setErreur("");
+            setMessage("");
+            await api.put(`/caisses/${caisseOuverte.id}/fond`, {
+                fondSupplementaire: Number(fondAjoute) || 0
+            });
+            setMessage("Fond de caisse ajoute.");
+            setFondAjoute(0);
+            await charger();
+        } catch (error) {
+            setErreur(getErrorMessage(error, "Impossible d'ajouter le fond de caisse."));
+        }
+    };
+
     const caissesFiltrees = useMemo(() => {
         return caisses.filter(caisse => {
             const nomOk = !filtreCaissier || (caisse.caissierNom || "").toLowerCase().includes(filtreCaissier.toLowerCase());
@@ -80,6 +97,9 @@ function Caisse({ role, nomUtilisateur }) {
 
     const totalEspece = caissesVisibles.reduce((sum, c) => sum + Number(c.totalEspece || 0), 0);
     const totalCredit = caissesVisibles.reduce((sum, c) => sum + Number(c.totalCredit || 0), 0);
+    const totalAchats = caissesVisibles.reduce((sum, c) => sum + Number(c.totalAchats || 0), 0);
+    const totalFondAjoute = caissesVisibles.reduce((sum, c) => sum + Number(c.fondSupplementaire || 0), 0);
+    const totalSolde = caissesVisibles.reduce((sum, c) => sum + Number(c.soldeTheorique || 0), 0);
     const totalEcart = caissesVisibles.reduce((sum, c) => sum + Number(c.ecart || 0), 0);
 
     return (
@@ -116,6 +136,17 @@ function Caisse({ role, nomUtilisateur }) {
                             </button>
                         </div>
                         <div className="col-md-4">
+                            <label>Ajouter fond de caisse</label>
+                            <input
+                                type="number"
+                                className="form-control mb-2"
+                                value={fondAjoute}
+                                disabled={!caisseOuverte}
+                                onChange={e => setFondAjoute(e.target.value)}
+                            />
+                            <button className="btn btn-primary w-100 mb-3" disabled={!caisseOuverte} onClick={ajouterFond}>
+                                Ajouter fond
+                            </button>
                             <label>Montant reel a la cloture</label>
                             <input
                                 type="number"
@@ -162,6 +193,15 @@ function Caisse({ role, nomUtilisateur }) {
                             <div className="border rounded p-3 bg-white">Credit : {totalCredit.toFixed(3)} DT</div>
                         </div>
                         <div className="col-md-4">
+                            <div className="border rounded p-3 bg-white">Achats : {totalAchats.toFixed(3)} DT</div>
+                        </div>
+                        <div className="col-md-4 mt-2">
+                            <div className="border rounded p-3 bg-white">Fond ajoute : {totalFondAjoute.toFixed(3)} DT</div>
+                        </div>
+                        <div className="col-md-4 mt-2">
+                            <div className="border rounded p-3 bg-white">Solde caisse : {totalSolde.toFixed(3)} DT</div>
+                        </div>
+                        <div className="col-md-4 mt-2">
                             <div className="border rounded p-3 bg-white">Ecart : {totalEcart.toFixed(3)} DT</div>
                         </div>
                     </div>
@@ -173,8 +213,11 @@ function Caisse({ role, nomUtilisateur }) {
                             <th>Ouverture</th>
                             <th>Cloture</th>
                             <th>Fond depart</th>
+                            <th>Fond ajoute</th>
                             <th>Especes</th>
                             <th>Credit</th>
+                            <th>Achats</th>
+                            <th>Solde</th>
                             <th>Ecart</th>
                             <th>Statut</th>
                         </tr>
@@ -186,8 +229,11 @@ function Caisse({ role, nomUtilisateur }) {
                                     <td>{caisse.dateOuverture ? new Date(caisse.dateOuverture).toLocaleString() : "-"}</td>
                                     <td>{caisse.dateCloture ? new Date(caisse.dateCloture).toLocaleString() : "-"}</td>
                                     <td>{Number(caisse.montantOuverture || 0).toFixed(3)} DT</td>
+                                    <td>{Number(caisse.fondSupplementaire || 0).toFixed(3)} DT</td>
                                     <td>{Number(caisse.totalEspece || 0).toFixed(3)} DT</td>
                                     <td>{Number(caisse.totalCredit || 0).toFixed(3)} DT</td>
+                                    <td>{Number(caisse.totalAchats || 0).toFixed(3)} DT</td>
+                                    <td>{Number(caisse.soldeTheorique || 0).toFixed(3)} DT</td>
                                     <td>{Number(caisse.ecart || 0).toFixed(3)} DT</td>
                                     <td>
                                         <span className={caisse.statut === "OUVERTE" ? "badge bg-success" : "badge bg-secondary"}>

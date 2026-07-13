@@ -6,6 +6,9 @@ const api = axios.create({
 });
 
 export const getErrorMessage = (error, fallback = "Une erreur est survenue.") =>
-    error.response?.data?.message || error.response?.data?.detail || fallback;
+    error.response?.data?.message ||
+    error.response?.data?.detail ||
+    (typeof error.response?.data === "string" ? error.response.data : "") ||
+    fallback;
 
 export default api;

@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+target/
+build/
+dist/
+
+# IDE / system files
+.idea/
+.vscode/
+desktop.ini
+Thumbs.db
+
+# Logs
+*.log
+
+# Archives generated for sharing
+*.zip
+*.rar
+*.7z
+*.lnk
+
+# Environment files
+.env
+.env.local

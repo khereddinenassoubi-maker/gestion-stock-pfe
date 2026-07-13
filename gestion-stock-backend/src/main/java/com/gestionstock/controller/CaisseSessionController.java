@@ -27,6 +27,11 @@ public class CaisseSessionController {
         return service.cloturer(id, dto);
     }
 
+    @PutMapping("/{id}/fond")
+    public CaisseSessionDTO ajouterFond(@PathVariable Long id, @RequestBody CaisseSessionDTO dto) {
+        return service.ajouterFond(id, dto);
+    }
+
     @GetMapping
     public List<CaisseSessionDTO> afficher() {
         return service.afficher();

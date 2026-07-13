@@ -22,5 +22,7 @@ public class AchatDTO {
 
     private Double total;
 
+    private String caissierNom;
+
     private List<LigneAchatDTO> lignes;
 }

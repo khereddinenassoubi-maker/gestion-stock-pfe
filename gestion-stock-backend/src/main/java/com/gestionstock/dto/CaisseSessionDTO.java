@@ -15,9 +15,12 @@ public class CaisseSessionDTO {
     private LocalDateTime dateOuverture;
     private LocalDateTime dateCloture;
     private Double montantOuverture;
+    private Double fondSupplementaire;
     private Double montantCloture;
     private Double totalEspece;
     private Double totalCredit;
+    private Double totalAchats;
+    private Double soldeTheorique;
     private Double ecart;
     private String statut;
 }

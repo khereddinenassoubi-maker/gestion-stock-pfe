@@ -23,6 +23,8 @@ public class Achat {
 
     private Double total;
 
+    private String caissierNom;
+
     @Enumerated(EnumType.STRING)
     private StatutAchat statut;
 
