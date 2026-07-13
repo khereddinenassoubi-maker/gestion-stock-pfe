@@ -117,6 +117,7 @@ public class VenteServiceImpl implements VenteService {
             if (dto.getQuantite() == null || dto.getQuantite() <= 0 || dto.getPrixVente() == null || dto.getPrixVente() < 0) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Quantité ou prix invalide.");
             }
+            normaliserArticle(article);
             article.setQuantiteStock(stock - dto.getQuantite());
             articleRepository.save(article);
             double sousTotal = dto.getQuantite() * dto.getPrixVente();
@@ -133,9 +134,19 @@ public class VenteServiceImpl implements VenteService {
     private void restaurerStock(Long id) {
         for (LigneVente ligne : ligneRepository.findByVente_Id(id)) {
             Article article = ligne.getArticle();
+            normaliserArticle(article);
             article.setQuantiteStock((article.getQuantiteStock() == null ? 0 : article.getQuantiteStock()) + ligne.getQuantite());
             articleRepository.save(article);
         }
+    }
+
+    private void normaliserArticle(Article article) {
+        if (article == null) return;
+        if (article.getPrixAchat() == null) article.setPrixAchat(0.0);
+        if (article.getPrixVente() == null) article.setPrixVente(0.0);
+        if (article.getQuantiteStock() == null) article.setQuantiteStock(0.0);
+        if (article.getSeuilStock() == null) article.setSeuilStock(0.0);
+        if (article.getActif() == null) article.setActif(true);
     }
 
     private void valider(VenteDTO dto) {

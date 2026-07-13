@@ -62,6 +62,7 @@ public class AchatServiceImpl implements AchatService {
             Article article = articleRepository.findById(ligneDTO.getArticleId()).orElse(null);
 
             if (article != null) {
+                normaliserArticle(article);
                 double sousTotal = ligneDTO.getQuantite() * ligneDTO.getPrixAchat();
                 total += sousTotal;
 
@@ -124,6 +125,7 @@ public class AchatServiceImpl implements AchatService {
             Article article = ligne.getArticle();
 
             if (article != null) {
+                normaliserArticle(article);
                 Double stockActuel = article.getQuantiteStock() != null ? article.getQuantiteStock() : 0.0;
                 article.setQuantiteStock(stockActuel - ligne.getQuantite());
                 articleRepository.save(article);
@@ -148,6 +150,7 @@ public class AchatServiceImpl implements AchatService {
             Article article = articleRepository.findById(ligneDTO.getArticleId()).orElse(null);
 
             if (article != null) {
+                normaliserArticle(article);
                 double sousTotal = ligneDTO.getQuantite() * ligneDTO.getPrixAchat();
                 total += sousTotal;
 
@@ -184,6 +187,7 @@ public class AchatServiceImpl implements AchatService {
             Article article = ligne.getArticle();
 
             if (article != null) {
+                normaliserArticle(article);
                 Double stockActuel = article.getQuantiteStock() != null ? article.getQuantiteStock() : 0.0;
                 article.setQuantiteStock(stockActuel - ligne.getQuantite());
                 articleRepository.save(article);
@@ -270,5 +274,14 @@ public class AchatServiceImpl implements AchatService {
 
     private double valeur(Double valeur) {
         return valeur == null ? 0.0 : valeur;
+    }
+
+    private void normaliserArticle(Article article) {
+        if (article == null) return;
+        if (article.getPrixAchat() == null) article.setPrixAchat(0.0);
+        if (article.getPrixVente() == null) article.setPrixVente(0.0);
+        if (article.getQuantiteStock() == null) article.setQuantiteStock(0.0);
+        if (article.getSeuilStock() == null) article.setSeuilStock(0.0);
+        if (article.getActif() == null) article.setActif(true);
     }
 }
